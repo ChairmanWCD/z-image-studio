@@ -11,9 +11,9 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        primary: '#D4AF37',
-        secondary: '#C9A227',
-        accent: '#E8C547',
+        primary: '#A78BFA',
+        secondary: '#8B5CF6',
+        accent: '#C4B5FD',
         background: 'var(--c-bg)',
         surface: 'var(--c-surface)',
         border: 'var(--c-border)',
@@ -34,28 +34,28 @@ tailwind.config = {
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --c-bg: #FBF8F0;
+  --c-bg: #F6F4FB;
   --c-surface: #FFFFFF;
-  --c-surface2: #F5F0E5;
-  --c-border: #EAE0CC;
-  --c-fg: #1A1610;
-  --c-muted: #8A7B5A;
+  --c-surface2: #EFEBF7;
+  --c-border: #DCD4EE;
+  --c-fg: #1C1830;
+  --c-muted: #6E6790;
 }
 .dark {
-  --c-bg: #15130E;
-  --c-surface: #1E1B14;
-  --c-surface2: #2B2620;
-  --c-border: #3D3628;
-  --c-fg: #F5F0E5;
-  --c-muted: #A89878;
+  --c-bg: #0A0A0F;
+  --c-surface: #12121A;
+  --c-surface2: #1C1B28;
+  --c-border: #2E2B45;
+  --c-fg: #EEEDF8;
+  --c-muted: #B0ABC9;
 }
 body { font-family: 'DM Sans', sans-serif; }
 h1, h2, h3, .font-heading { font-family: 'Space Grotesk', sans-serif; }
 .glow { position: fixed; pointer-events: none; z-index: 0; }
 .glow-1 { top: -200px; right: -200px; width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 60%); }
+  background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 60%); }
 .glow-2 { bottom: -200px; left: -100px; width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(232,197,71,0.10) 0%, transparent 60%); }
+  background: radial-gradient(circle, rgba(196,181,253,0.10) 0%, transparent 60%); }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
@@ -63,12 +63,12 @@ h1, h2, h3, .font-heading { font-family: 'Space Grotesk', sans-serif; }
 input[type="range"] { -webkit-appearance: none; appearance: none; height: 6px;
   border-radius: 3px; background: var(--c-surface2); outline: none; }
 input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none;
-  width: 18px; height: 18px; border-radius: 50%; background: #D4AF37; cursor: pointer;
-  border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(212,175,55,0.3); transition: transform 0.15s; }
+  width: 18px; height: 18px; border-radius: 50%; background: #A78BFA; cursor: pointer;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(167,139,250,0.3); transition: transform 0.15s; }
 input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%;
-  background: #D4AF37; cursor: pointer; border: 2px solid #fff; }
-input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(212,175,55,0.4); }
+  background: #A78BFA; cursor: pointer; border: 2px solid #fff; }
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(167,139,250,0.4); }
 .skeleton { background: linear-gradient(90deg, var(--c-surface2) 25%, var(--c-border) 50%, var(--c-surface2) 75%);
   background-size: 200% 100%; animation: shimmer 1.5s infinite; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -78,11 +78,11 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .slide-down { animation: slideDown 0.2s ease; }
 @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } }
-.preset-btn.active { background: #D4AF37; color: #1A1610; border-color: #D4AF37; }
+.preset-btn.active { background: #A78BFA; color: #151428; border-color: #A78BFA; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
-.focus-ring:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--c-surface), 0 0 0 4px #D4AF37; }
+.focus-ring:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--c-surface), 0 0 0 4px #A78BFA; }
 </style>
 </head>
 <body class="bg-background text-foreground min-h-screen">
@@ -94,7 +94,7 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
-        <svg class="w-5 h-5 text-[#1A1610]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="w-5 h-5 text-[#151428]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5a2 2 0 0 0-2.8 0L6 21"/>
         </svg>
       </div>
@@ -212,7 +212,7 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px 
         </div>
       </div>
 
-      <button id="generate-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-[#1A1610] font-heading font-semibold text-base hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-ring">
+      <button id="generate-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-[#151428] font-heading font-semibold text-base hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-ring">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4M13 3l3.5 7.5L24 14l-7.5 3.5L13 25l-3.5-7.5L2 14l7.5-3.5L13 3z"/></svg>
         <span id="generate-text">Generate</span>
       </button>
@@ -558,7 +558,7 @@ const App = {
 
   showToast(msg, type) {
     const toast = document.createElement('div');
-    const colors = { error: 'bg-red-500/90 text-white', success: 'bg-green-500/90 text-white', info: 'bg-primary/90 text-[#1A1610]' };
+    const colors = { error: 'bg-red-500/90 text-white', success: 'bg-green-500/90 text-white', info: 'bg-primary/90 text-[#151428]' };
     toast.className = `${colors[type] || colors.info} text-white text-sm px-4 py-3 rounded-lg shadow-lg fade-in`;
     toast.textContent = msg;
     document.getElementById('toast-container').appendChild(toast);
