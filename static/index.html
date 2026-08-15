@@ -99,7 +99,7 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px 
         </svg>
       </div>
       <div>
-        <h1 class="font-heading font-bold text-lg leading-none">Z-Image Studio</h1>
+        <div class="font-heading font-bold text-lg leading-none">Z-Image Studio</div>
         <p class="text-xs text-muted mt-0.5">Turbo Image Generation</p>
       </div>
     </div>
@@ -120,6 +120,15 @@ input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px 
 </header>
 
 <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+  <section class="relative mb-6 rounded-2xl overflow-hidden border border-border bg-surface">
+    <img src="/static/hero.png" alt="Z-Image Studio hero" class="w-full h-[240px] sm:h-[360px] lg:h-[460px] object-cover object-center">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none"></div>
+    <div class="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+      <h1 class="font-heading font-bold text-3xl sm:text-5xl text-white leading-none drop-shadow">Z-Image Studio</h1>
+      <p class="mt-2 text-white/75 text-sm sm:text-base">Turbo Image Generation · Powered by your RTX 5070</p>
+    </div>
+  </section>
+
   <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
 
     <aside class="space-y-5">
