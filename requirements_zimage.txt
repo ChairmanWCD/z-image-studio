@@ -1,0 +1,9 @@
+transformers>=5.0
+accelerate>=1.0
+safetensors>=0.4
+huggingface_hub>=0.30
+pillow>=10.0
+fastapi>=0.100
+uvicorn[standard]>=0.30
+pydantic>=2.0
+numpy>=1.24

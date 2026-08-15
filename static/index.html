@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-Image Studio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: '#D4AF37',
+        secondary: '#C9A227',
+        accent: '#E8C547',
+        background: 'var(--c-bg)',
+        surface: 'var(--c-surface)',
+        border: 'var(--c-border)',
+        foreground: 'var(--c-fg)',
+        muted: 'var(--c-muted)',
+        surface2: 'var(--c-surface2)',
+      },
+      fontFamily: {
+        heading: ['Space Grotesk', 'sans-serif'],
+        body: ['DM Sans', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #FBF8F0;
+  --c-surface: #FFFFFF;
+  --c-surface2: #F5F0E5;
+  --c-border: #EAE0CC;
+  --c-fg: #1A1610;
+  --c-muted: #8A7B5A;
+}
+.dark {
+  --c-bg: #15130E;
+  --c-surface: #1E1B14;
+  --c-surface2: #2B2620;
+  --c-border: #3D3628;
+  --c-fg: #F5F0E5;
+  --c-muted: #A89878;
+}
+body { font-family: 'DM Sans', sans-serif; }
+h1, h2, h3, .font-heading { font-family: 'Space Grotesk', sans-serif; }
+.glow { position: fixed; pointer-events: none; z-index: 0; }
+.glow-1 { top: -200px; right: -200px; width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 60%); }
+.glow-2 { bottom: -200px; left: -100px; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(232,197,71,0.10) 0%, transparent 60%); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-muted); }
+input[type="range"] { -webkit-appearance: none; appearance: none; height: 6px;
+  border-radius: 3px; background: var(--c-surface2); outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%; background: #D4AF37; cursor: pointer;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(212,175,55,0.3); transition: transform 0.15s; }
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%;
+  background: #D4AF37; cursor: pointer; border: 2px solid #fff; }
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(212,175,55,0.4); }
+.skeleton { background: linear-gradient(90deg, var(--c-surface2) 25%, var(--c-border) 50%, var(--c-surface2) 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.pulse-dot { animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.slide-down { animation: slideDown 0.2s ease; }
+@keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 500px; } }
+.preset-btn.active { background: #D4AF37; color: #1A1610; border-color: #D4AF37; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+.focus-ring:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--c-surface), 0 0 0 4px #D4AF37; }
+</style>
+</head>
+<body class="bg-background text-foreground min-h-screen">
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="relative z-10 min-h-screen flex flex-col">
+
+<header class="border-b border-border bg-surface/80 backdrop-blur-md sticky top-0 z-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5 text-[#1A1610]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5a2 2 0 0 0-2.8 0L6 21"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-heading font-bold text-lg leading-none">Z-Image Studio</h1>
+        <p class="text-xs text-muted mt-0.5">Turbo Image Generation</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <div id="status-pill" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface2 text-sm">
+        <span id="status-dot" class="w-2 h-2 rounded-full bg-amber-400 pulse-dot"></span>
+        <span id="status-text" class="text-muted">Connecting...</span>
+      </div>
+      <button id="theme-toggle" class="w-10 h-10 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors duration-200 flex items-center justify-center focus-ring" aria-label="Toggle theme">
+        <svg id="icon-moon" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg id="icon-sun" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      <a href="/docs" target="_blank" class="w-10 h-10 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors duration-200 flex items-center justify-center focus-ring" aria-label="API Docs">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+  <div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
+
+    <aside class="space-y-5">
+      <div class="bg-surface rounded-xl border border-border p-5 space-y-4">
+        <div>
+          <label for="prompt" class="block text-sm font-medium mb-2">Prompt</label>
+          <textarea id="prompt" rows="4" class="w-full rounded-lg bg-surface2 border border-border px-3 py-2.5 text-sm resize-y focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted" placeholder="A serene mountain lake at dawn, watercolor painting..."></textarea>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="example-prompt text-xs px-2.5 py-1 rounded-full bg-surface2 border border-border hover:border-primary transition-colors" data-prompt="a red panda reading a book, watercolor illustration">Red panda reading</button>
+          <button class="example-prompt text-xs px-2.5 py-1 rounded-full bg-surface2 border border-border hover:border-primary transition-colors" data-prompt="futuristic city skyline at sunset, cyberpunk style, neon lights">Cyberpunk city</button>
+          <button class="example-prompt text-xs px-2.5 py-1 rounded-full bg-surface2 border border-border hover:border-primary transition-colors" data-prompt="a bowl of ramen, top-down food photography, steam rising">Ramen bowl</button>
+        </div>
+      </div>
+
+      <div class="bg-surface rounded-xl border border-border">
+        <button id="advanced-toggle" class="w-full px-5 py-3.5 flex items-center justify-between text-sm font-medium hover:bg-surface2 transition-colors rounded-xl">
+          <span>Advanced Settings</span>
+          <svg id="advanced-chevron" class="w-4 h-4 text-muted transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div id="advanced-panel" class="hidden px-5 pb-5 space-y-4">
+          <div>
+            <label for="negative-prompt" class="block text-sm font-medium mb-2">Negative Prompt</label>
+            <textarea id="negative-prompt" rows="2" class="w-full rounded-lg bg-surface2 border border-border px-3 py-2 text-sm resize-y focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted" placeholder="blurry, low quality, distorted..."></textarea>
+            <p class="text-xs text-muted mt-1.5">Only used when guidance scale is above 0</p>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label for="guidance" class="text-sm font-medium">Guidance Scale</label>
+              <span id="guidance-value" class="text-sm text-muted font-mono">0.0</span>
+            </div>
+            <input type="range" id="guidance" min="0" max="20" step="0.5" value="0" class="w-full">
+          </div>
+          <div>
+            <label for="seed" class="block text-sm font-medium mb-2">Seed</label>
+            <div class="flex gap-2">
+              <input type="number" id="seed" class="flex-1 rounded-lg bg-surface2 border border-border px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted" placeholder="Random">
+              <button id="random-seed" class="px-3 rounded-lg bg-surface2 border border-border hover:border-primary transition-colors flex items-center justify-center" aria-label="Random seed">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M16 8h.01M8 8h.01M8 16h.01M16 16h.01M12 12h.01"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-surface rounded-xl border border-border p-5 space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2.5">Image Size</label>
+          <div id="size-presets" class="grid grid-cols-2 gap-2">
+            <button class="preset-btn active text-xs px-3 py-2.5 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors text-left" data-size="square_hd">
+              <div class="font-medium">Square HD</div><div class="text-muted text-[10px]">1024 x 1024</div>
+            </button>
+            <button class="preset-btn text-xs px-3 py-2.5 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors text-left" data-size="square">
+              <div class="font-medium">Square</div><div class="text-muted text-[10px]">1024 x 1024</div>
+            </button>
+            <button class="preset-btn text-xs px-3 py-2.5 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors text-left" data-size="portrait_4_3">
+              <div class="font-medium">Portrait 4:3</div><div class="text-muted text-[10px]">896 x 1152</div>
+            </button>
+            <button class="preset-btn text-xs px-3 py-2.5 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors text-left" data-size="portrait_16_9">
+              <div class="font-medium">Portrait 16:9</div><div class="text-muted text-[10px]">768 x 1344</div>
+            </button>
+            <button class="preset-btn text-xs px-3 py-2.5 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors text-left" data-size="landscape_4_3">
+              <div class="font-medium">Landscape 4:3</div><div class="text-muted text-[10px]">1152 x 896</div>
+            </button>
+            <button class="preset-btn text-xs px-3 py-2.5 rounded-lg border border-border bg-surface2 hover:border-primary transition-colors text-left" data-size="landscape_16_9">
+              <div class="font-medium">Landscape 16:9</div><div class="text-muted text-[10px]">1344 x 768</div>
+            </button>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="steps" class="text-sm font-medium">Inference Steps</label>
+            <span id="steps-value" class="text-sm text-muted font-mono">9</span>
+          </div>
+          <input type="range" id="steps" min="1" max="10" step="1" value="9" class="w-full">
+        </div>
+        <div class="flex gap-3">
+          <div class="flex-1">
+            <label for="num-images" class="block text-sm font-medium mb-2">Images</label>
+            <select id="num-images" class="w-full rounded-lg bg-surface2 border border-border px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            </select>
+          </div>
+          <div class="flex-1">
+            <label for="format" class="block text-sm font-medium mb-2">Format</label>
+            <select id="format" class="w-full rounded-lg bg-surface2 border border-border px-3 py-2 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
+              <option value="png">PNG</option><option value="jpeg">JPEG</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button id="generate-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-primary to-accent text-[#1A1610] font-heading font-semibold text-base hover:opacity-90 transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-ring">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4M13 3l3.5 7.5L24 14l-7.5 3.5L13 25l-3.5-7.5L2 14l7.5-3.5L13 3z"/></svg>
+        <span id="generate-text">Generate</span>
+      </button>
+      <button id="cancel-btn" class="hidden w-full py-2.5 rounded-xl border border-border bg-surface2 hover:border-accent text-sm font-medium transition-colors">Cancel</button>
+    </aside>
+
+    <section id="canvas-area" class="bg-surface rounded-xl border border-border min-h-[500px] lg:min-h-[600px] flex flex-col">
+      <div id="empty-state" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-20 h-20 rounded-2xl bg-surface2 border border-border flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5a2 2 0 0 0-2.8 0L6 21"/></svg>
+        </div>
+        <h2 class="font-heading text-lg font-semibold mb-1">Ready to Create</h2>
+        <p class="text-muted text-sm max-w-xs">Enter a prompt and click Generate to create stunning images with Z-Image Turbo.</p>
+      </div>
+      <div id="loading-state" class="hidden flex-1 flex flex-col items-center justify-center p-8">
+        <div class="w-full max-w-md aspect-square rounded-xl skeleton mb-4"></div>
+        <div class="flex items-center gap-2 text-muted">
+          <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke-linecap="round"/></svg>
+          <span id="loading-text">Generating... 0s</span>
+        </div>
+      </div>
+      <div id="result-state" class="hidden flex-1 flex flex-col p-4 sm:p-6">
+        <div id="result-images" class="flex-1 flex flex-wrap gap-4 items-center justify-center"></div>
+        <div id="result-meta" class="mt-4 flex flex-wrap items-center gap-3 text-sm"></div>
+      </div>
+      <div id="error-state" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <h2 class="font-heading text-lg font-semibold mb-1">Generation Failed</h2>
+        <p id="error-message" class="text-muted text-sm max-w-md"></p>
+        <button id="retry-btn" class="mt-4 px-4 py-2 rounded-lg bg-surface2 border border-border hover:border-primary text-sm font-medium transition-colors">Try Again</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="mt-6">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-heading text-sm font-semibold text-muted uppercase tracking-wide">Recent Generations</h3>
+      <button id="refresh-history" class="text-muted hover:text-foreground transition-colors" aria-label="Refresh">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+      </button>
+    </div>
+    <div id="history-strip" class="flex gap-3 overflow-x-auto pb-2"></div>
+    <div id="history-empty" class="text-muted text-sm text-center py-6">No recent generations yet.</div>
+  </section>
+</main>
+
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 space-y-2"></div>
+</div>
+
+<script>
+const App = {
+  state: { currentRequestId: null, pollTimer: null, elapsedTimer: null, elapsed: 0, isGenerating: false },
+
+  init() {
+    this.loadTheme();
+    document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
+    document.getElementById('generate-btn').addEventListener('click', () => this.generate());
+    document.getElementById('cancel-btn').addEventListener('click', () => this.cancel());
+    document.getElementById('retry-btn').addEventListener('click', () => this.showState('empty'));
+    document.getElementById('refresh-history').addEventListener('click', () => this.loadHistory());
+    document.getElementById('random-seed').addEventListener('click', () => {
+      document.getElementById('seed').value = Math.floor(Math.random() * 2**31);
+    });
+    document.getElementById('advanced-toggle').addEventListener('click', () => {
+      const panel = document.getElementById('advanced-panel');
+      const chevron = document.getElementById('advanced-chevron');
+      panel.classList.toggle('hidden');
+      panel.classList.toggle('slide-down');
+      chevron.style.transform = panel.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+    document.getElementById('steps').addEventListener('input', e => {
+      document.getElementById('steps-value').textContent = e.target.value;
+    });
+    document.getElementById('guidance').addEventListener('input', e => {
+      document.getElementById('guidance-value').textContent = parseFloat(e.target.value).toFixed(1);
+    });
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+    document.querySelectorAll('.example-prompt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('prompt').value = btn.dataset.prompt;
+        document.getElementById('prompt').focus();
+      });
+    });
+    document.getElementById('prompt').addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') this.generate();
+    });
+    this.checkHealth();
+    this.loadHistory();
+    setInterval(() => this.checkHealth(), 30000);
+  },
+
+  async checkHealth() {
+    try {
+      const res = await fetch('/health');
+      const data = await res.json();
+      const dot = document.getElementById('status-dot');
+      const text = document.getElementById('status-text');
+      if (data.status === 'ok') {
+        dot.className = 'w-2 h-2 rounded-full bg-green-400';
+        text.textContent = 'Ready';
+        text.className = 'text-green-500';
+      } else if (data.status === 'starting') {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-400 pulse-dot';
+        text.textContent = 'Loading model...';
+        text.className = 'text-amber-500';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-red-400';
+        text.textContent = 'Error';
+        text.className = 'text-red-500';
+      }
+    } catch {
+      const dot = document.getElementById('status-dot');
+      const text = document.getElementById('status-text');
+      dot.className = 'w-2 h-2 rounded-full bg-red-400';
+      text.textContent = 'Offline';
+      text.className = 'text-red-500';
+    }
+  },
+
+  buildInput() {
+    const sizeBtn = document.querySelector('.preset-btn.active');
+    const input = {
+      prompt: document.getElementById('prompt').value.trim(),
+      image_size: sizeBtn ? sizeBtn.dataset.size : 'square_hd',
+      num_inference_steps: parseInt(document.getElementById('steps').value),
+      guidance_scale: parseFloat(document.getElementById('guidance').value),
+      num_images: parseInt(document.getElementById('num-images').value),
+      output_format: document.getElementById('format').value,
+    };
+    const neg = document.getElementById('negative-prompt').value.trim();
+    if (neg) input.negative_prompt = neg;
+    const seed = document.getElementById('seed').value.trim();
+    if (seed) input.seed = parseInt(seed);
+    return input;
+  },
+
+  async generate() {
+    const input = this.buildInput();
+    if (!input.prompt) {
+      this.showToast('Please enter a prompt', 'error');
+      document.getElementById('prompt').focus();
+      return;
+    }
+    this.state.isGenerating = true;
+    document.getElementById('generate-btn').disabled = true;
+    document.getElementById('generate-text').textContent = 'Generating...';
+    document.getElementById('cancel-btn').classList.remove('hidden');
+    this.state.elapsed = 0;
+    this.showState('loading');
+    this.startElapsedTimer();
+    try {
+      const res = await fetch('/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `Server returned ${res.status}`);
+      }
+      const data = await res.json();
+      this.state.currentRequestId = data.request_id;
+      this.pollStatus(data.request_id);
+    } catch (e) {
+      this.showError(e.message);
+    }
+  },
+
+  async pollStatus(id) {
+    try {
+      const res = await fetch(`/status/${id}`);
+      const data = await res.json();
+      if (data.status === 'COMPLETED') {
+        this.stopElapsedTimer();
+        await this.fetchResult(id);
+      } else if (data.status === 'FAILED') {
+        this.stopElapsedTimer();
+        this.showError(data.error || 'Generation failed');
+      } else if (data.status === 'CANCELLED') {
+        this.stopElapsedTimer();
+        this.resetUI();
+      } else {
+        this.state.pollTimer = setTimeout(() => this.pollStatus(id), 1500);
+      }
+    } catch {
+      this.state.pollTimer = setTimeout(() => this.pollStatus(id), 1500);
+    }
+  },
+
+  async fetchResult(id) {
+    try {
+      const res = await fetch(`/result/${id}`);
+      const data = await res.json();
+      this.displayResult(data);
+      this.loadHistory();
+    } catch (e) {
+      this.showError(e.message);
+    }
+  },
+
+  fixUrl(url) {
+    if (!url) return '';
+    try {
+      const u = new URL(url, window.location.origin);
+      return window.location.origin + u.pathname;
+    } catch { return url; }
+  },
+
+  displayResult(data) {
+    this.state.isGenerating = false;
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('generate-text').textContent = 'Generate';
+    document.getElementById('cancel-btn').classList.add('hidden');
+    const container = document.getElementById('result-images');
+    container.innerHTML = '';
+    data.images.forEach((img, i) => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'relative group fade-in';
+      const imgEl = document.createElement('img');
+      imgEl.src = this.fixUrl(img.url);
+      imgEl.alt = data.prompt;
+      imgEl.className = 'max-w-full max-h-[60vh] rounded-xl border border-border';
+      const dl = document.createElement('a');
+      dl.href = this.fixUrl(img.url);
+      dl.download = '';
+      dl.className = 'absolute top-2 right-2 w-9 h-9 rounded-lg bg-black/50 backdrop-blur text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+      dl.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+      wrapper.appendChild(imgEl);
+      wrapper.appendChild(dl);
+      container.appendChild(wrapper);
+    });
+    const meta = document.getElementById('result-meta');
+    meta.innerHTML = '';
+    const seedBadge = document.createElement('div');
+    seedBadge.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface2 text-xs';
+    seedBadge.innerHTML = `<span class="text-muted">Seed:</span><span class="font-mono">${data.seed}</span>`;
+    meta.appendChild(seedBadge);
+    if (data.timings) {
+      const timeBadge = document.createElement('div');
+      timeBadge.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface2 text-xs';
+      timeBadge.innerHTML = `<span class="text-muted">Time:</span><span class="font-mono">${data.timings.generation_seconds}s</span>`;
+      meta.appendChild(timeBadge);
+    }
+    const useSeedBtn = document.createElement('button');
+    useSeedBtn.className = 'px-3 py-1.5 rounded-lg bg-surface2 border border-border hover:border-primary text-xs font-medium transition-colors';
+    useSeedBtn.textContent = 'Use This Seed';
+    useSeedBtn.addEventListener('click', () => {
+      document.getElementById('seed').value = data.seed;
+      this.showToast('Seed applied', 'success');
+    });
+    meta.appendChild(useSeedBtn);
+    this.showState('result');
+  },
+
+  async cancel() {
+    if (this.state.currentRequestId) {
+      try { await fetch(`/cancel/${this.state.currentRequestId}`, { method: 'POST' }); } catch {}
+    }
+    clearTimeout(this.state.pollTimer);
+    this.stopElapsedTimer();
+    this.resetUI();
+  },
+
+  resetUI() {
+    this.state.isGenerating = false;
+    this.state.currentRequestId = null;
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('generate-text').textContent = 'Generate';
+    document.getElementById('cancel-btn').classList.add('hidden');
+    this.showState('empty');
+  },
+
+  startElapsedTimer() {
+    this.state.elapsedTimer = setInterval(() => {
+      this.state.elapsed++;
+      document.getElementById('loading-text').textContent = `Generating... ${this.state.elapsed}s`;
+    }, 1000);
+  },
+
+  stopElapsedTimer() {
+    clearInterval(this.state.elapsedTimer);
+    this.state.elapsedTimer = null;
+  },
+
+  showState(state) {
+    ['empty', 'loading', 'result', 'error'].forEach(s => {
+      const el = document.getElementById(s + '-state') || document.getElementById(s === 'empty' ? 'empty-state' : s + '-state');
+      if (el) el.classList.add('hidden');
+    });
+    const map = { empty: 'empty-state', loading: 'loading-state', result: 'result-state', error: 'error-state' };
+    const target = document.getElementById(map[state]);
+    if (target) target.classList.remove('hidden');
+    if (state === 'empty') this.state.isGenerating = false;
+  },
+
+  showError(msg) {
+    this.state.isGenerating = false;
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('generate-text').textContent = 'Generate';
+    document.getElementById('cancel-btn').classList.add('hidden');
+    this.stopElapsedTimer();
+    document.getElementById('error-message').textContent = msg;
+    this.showState('error');
+  },
+
+  async loadHistory() {
+    try {
+      const res = await fetch('/api/history');
+      const data = await res.json();
+      const strip = document.getElementById('history-strip');
+      const empty = document.getElementById('history-empty');
+      strip.innerHTML = '';
+      if (!data.images || data.images.length === 0) {
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      data.images.forEach(img => {
+        const thumb = document.createElement('button');
+        thumb.className = 'shrink-0 w-24 h-24 rounded-lg border border-border overflow-hidden hover:border-primary transition-colors group relative';
+        const imgEl = document.createElement('img');
+        imgEl.src = this.fixUrl(img.url);
+        imgEl.alt = img.name;
+        imgEl.className = 'w-full h-full object-cover';
+        imgEl.loading = 'lazy';
+        thumb.appendChild(imgEl);
+        const overlay = document.createElement('div');
+        overlay.className = 'absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center';
+        overlay.innerHTML = '<svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M14 10l7-7M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
+        thumb.appendChild(overlay);
+        thumb.addEventListener('click', () => window.open(this.fixUrl(img.url), '_blank'));
+        strip.appendChild(thumb);
+      });
+    } catch {}
+  },
+
+  showToast(msg, type) {
+    const toast = document.createElement('div');
+    const colors = { error: 'bg-red-500/90 text-white', success: 'bg-green-500/90 text-white', info: 'bg-primary/90 text-[#1A1610]' };
+    toast.className = `${colors[type] || colors.info} text-white text-sm px-4 py-3 rounded-lg shadow-lg fade-in`;
+    toast.textContent = msg;
+    document.getElementById('toast-container').appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+  },
+
+  loadTheme() {
+    const saved = localStorage.getItem('zimage-theme');
+    if (saved === 'light') document.documentElement.classList.remove('dark');
+    else document.documentElement.classList.add('dark');
+    this.updateThemeIcon();
+  },
+
+  toggleTheme() {
+    document.documentElement.classList.toggle('dark');
+    const isDark = document.documentElement.classList.contains('dark');
+    localStorage.setItem('zimage-theme', isDark ? 'dark' : 'light');
+    this.updateThemeIcon();
+  },
+
+  updateThemeIcon() {
+    const isDark = document.documentElement.classList.contains('dark');
+    document.getElementById('icon-moon').classList.toggle('hidden', isDark);
+    document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
+  },
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>

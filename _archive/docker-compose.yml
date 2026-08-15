@@ -1,0 +1,43 @@
+services:
+  zimage-server:
+    build: .
+    container_name: zimage-inference
+    ports:
+      - "${PORT:-8100}:8000"
+    volumes:
+      - ${MODELS_DIR:-../models}:/models:ro
+      - hf-cache:/root/.cache/huggingface
+      - ./output:/app/output
+    environment:
+      - ZIMAGE_LOAD_MODE=${ZIMAGE_LOAD_MODE:-local}
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN:-}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - HF_HOME=/root/.cache/huggingface
+      - PUBLIC_PORT=${PORT:-8100}
+      - HOST_IP=172.16.34.59
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - zimage-net
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      start_period: 900s
+      retries: 5
+
+volumes:
+  hf-cache:
+
+networks:
+  zimage-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.200.0.0/24
